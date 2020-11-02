@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "ts-node": "ts-node",
+    "bmi": "npm run ts-node bmi.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
