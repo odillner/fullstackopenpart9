@@ -12,10 +12,6 @@ interface ExercisePeriod {
 }
 
 export const calculateExercises = (daily_exercises: Array<number>, target: number): ExercisePeriod => {
-    if (daily_exercises.length === 0) {
-        throw new Error('Empty array');
-    }
-
     const periodLength: number = daily_exercises.length;
     const trainingDays: number = daily_exercises.filter(day => day !== 0).length;
     const average: number = daily_exercises.reduce((acc, i) => acc + i)/periodLength;
