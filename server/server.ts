@@ -1,5 +1,6 @@
-import express from 'express';
+import express, {Request} from 'express';
 import http from 'http';
+import bodyParser from 'body-parser';
 
 import {calculateBMI} from './bmi';
 import {calculateExercises} from './exercise';
@@ -7,7 +8,8 @@ import {calculateExercises} from './exercise';
 const PORT = 3000;
 const app = express();
 
-app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.get('/hello', (_req, res) => {
     res.send('Hello Full Stack');
@@ -28,20 +30,36 @@ app.get('/bmi', (req, res) => {
     res.json(BMI);
 });
 
-
-interface ExerciseArgs {
-    daily_exercises: Array<number>;
-    target: number;
+interface ExerciseRequestBody {
+    daily_exercises: Array<number>,
+    target: number
 }
 
-app.post('/exercises', (req, res) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const {daily_exercises, target} = req.body as ExerciseArgs;
+app.post('/exercises', (req: Request<unknown, unknown, ExerciseRequestBody>, res) => {
+    const {daily_exercises, target} = req.body;
 
-    console.log(daily_exercises, target)
+    console.log({daily_exercises}, target);
+
     if ((target === undefined) || (daily_exercises === undefined)) {
         res.status(400).json({error: "parameters missing"});
         return;
+    }
+
+    if (isNaN(Number(target))) {
+        res.status(400).json({error: "malformed parameters"});
+        return;
+    }
+    
+    if (!Array.isArray(daily_exercises)) {
+        res.status(400).json({error: "malformed parameters"});
+        return;
+    } else {
+        daily_exercises.forEach(i => {
+            if (isNaN(Number(i))) {
+                res.status(400).json({error: "malformed parameters"});
+                return;
+            }
+        });
     }
 
     const exercisePeriod = calculateExercises(daily_exercises, target);

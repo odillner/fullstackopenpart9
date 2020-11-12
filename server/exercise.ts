@@ -11,14 +11,14 @@ interface ExercisePeriod {
     target: number;
 }
 
-export const calculateExercises = (result: Array<number>, target: number): ExercisePeriod => {
-    if (result.length === 0) {
+export const calculateExercises = (daily_exercises: Array<number>, target: number): ExercisePeriod => {
+    if (daily_exercises.length === 0) {
         throw new Error('Empty array');
     }
 
-    const periodLength: number = result.length;
-    const trainingDays: number = result.filter(day => day !== 0).length;
-    const average: number = result.reduce((acc, i) => acc + i)/periodLength;
+    const periodLength: number = daily_exercises.length;
+    const trainingDays: number = daily_exercises.filter(day => day !== 0).length;
+    const average: number = daily_exercises.reduce((acc, i) => acc + i)/periodLength;
     const success: boolean = average >= target;
     const rating: number = success ? average >= target*2 ? 3 : 2 : 1;
 
